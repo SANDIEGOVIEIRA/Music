@@ -13,12 +13,17 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.concurrent.Executor;
 
 public class FormLogin extends AppCompatActivity {
 
@@ -27,6 +32,10 @@ public class FormLogin extends AppCompatActivity {
     private Button bt_entrar;
     private ProgressBar progressBar;
     String[] messages = {"Fill in all fields!"};
+
+    private Executor executor;
+    private BiometricPrompt biometricPrompt;
+    private BiometricPrompt.PromptInfo promptInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +47,6 @@ public class FormLogin extends AppCompatActivity {
         text_tela_cadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(FormLogin.this, FormCadastro.class);
                 startActivity(intent);
             }
@@ -47,7 +55,6 @@ public class FormLogin extends AppCompatActivity {
         bt_entrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String email = edit_email.getText().toString();
                 String password = edit_password.getText().toString();
 
@@ -62,28 +69,53 @@ public class FormLogin extends AppCompatActivity {
             }
         });
 
+        // Configurar autenticação biométrica
+        executor = ContextCompat.getMainExecutor(this);
+        biometricPrompt = new BiometricPrompt(FormLogin.this, executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                // Tratar erros de autenticação biométrica, se necessário
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                // A autenticação biométrica foi bem-sucedida, você pode realizar ações aqui
+                MainActivity();
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                // A autenticação biométrica falhou, trate conforme necessário
+            }
+        });
+
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric login for my app")
+                .setSubtitle("Log in using your biometric credential")
+                .setNegativeButtonText("Cancel")
+                .build();
     }
 
     private void AuthenticateUser(View view) {
-
         String email = edit_email.getText().toString();
         String password = edit_password.getText().toString();
 
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-
                 if (task.isSuccessful()) {
                     progressBar.setVisibility(View.VISIBLE);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            MainActivity();
-
+                            // Autenticação bem-sucedida com email/senha, iniciar autenticação biométrica
+                            biometricPrompt.authenticate(promptInfo);
                         }
                     }, 3000);
-
                 } else {
                     String error;
 
@@ -96,7 +128,6 @@ public class FormLogin extends AppCompatActivity {
                     snackbar.setBackgroundTint(Color.WHITE);
                     snackbar.setTextColor(Color.BLACK);
                     snackbar.show();
-
                 }
             }
         });
@@ -109,7 +140,8 @@ public class FormLogin extends AppCompatActivity {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null) {
-            MainActivity();
+            // O usuário já está autenticado com email/senha, iniciar autenticação biométrica
+            biometricPrompt.authenticate(promptInfo);
         }
     }
 
@@ -127,3 +159,4 @@ public class FormLogin extends AppCompatActivity {
         progressBar = findViewById(R.id.progressbar);
     }
 }
+
