@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MUSIC</string>
+    <string name="entrar">Entrar</string>
+    <string name="text_cadastro">Crie uma conta clicando aqui</string>
+    <string name="title_cadastro">Cadastre-se</string>
+    <string name="voltar">Voltar</string>
+    <string name="msg_token_fmt">Token: %1$s</string>
+</resources>
