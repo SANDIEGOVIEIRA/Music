@@ -31,7 +31,7 @@ public class FormLogin extends AppCompatActivity {
     private EditText edit_email, edit_password;
     private Button bt_entrar;
     private ProgressBar progressBar;
-    String[] messages = {"Fill in all fields!"};
+    String[] messages = {"Preencha todos os campos!"};
 
     private Executor executor;
     private BiometricPrompt biometricPrompt;
@@ -93,9 +93,9 @@ public class FormLogin extends AppCompatActivity {
         });
 
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Biometric login for my app")
-                .setSubtitle("Log in using your biometric credential")
-                .setNegativeButtonText("Cancel")
+                .setTitle("Login biométrico para meu aplicativo")
+                .setSubtitle("Faça login usando sua credencial biométrica")
+                .setNegativeButtonText("Cancelar")
                 .build();
     }
 
@@ -122,7 +122,7 @@ public class FormLogin extends AppCompatActivity {
                     try {
                         throw task.getException();
                     } catch (Exception e) {
-                        error = "Error logging in user";
+                        error = "Erro ao logar usuário";
                     }
                     Snackbar snackbar = Snackbar.make(view, error, Snackbar.LENGTH_SHORT);
                     snackbar.setBackgroundTint(Color.WHITE);
