@@ -29,9 +29,11 @@ public class FormLogin extends AppCompatActivity {
 
     private TextView text_tela_cadastro;
     private EditText edit_email, edit_password;
-    private Button bt_entrar;
+    private Button bt_entrar, bt_biometric;
     private ProgressBar progressBar;
     String[] messages = {"Preencha todos os campos!"};
+
+    private boolean useBiometric = false; // Variável para rastrear se o usuário optou por usar a autenticação biométrica
 
     private Executor executor;
     private BiometricPrompt biometricPrompt;
@@ -69,26 +71,41 @@ public class FormLogin extends AppCompatActivity {
             }
         });
 
+        bt_biometric.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Alternar entre usar ou não a autenticação biométrica
+                useBiometric = !useBiometric;
+                // Atualizar a interface do usuário para refletir a escolha do usuário (por exemplo, alterar a cor do botão)
+                updateBiometricButtonState();
+            }
+        });
+
         // Configurar autenticação biométrica
         executor = ContextCompat.getMainExecutor(this);
         biometricPrompt = new BiometricPrompt(FormLogin.this, executor, new BiometricPrompt.AuthenticationCallback() {
             @Override
-            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+            public void onAuthenticationError(int errorCode, CharSequence errString) {
                 super.onAuthenticationError(errorCode, errString);
                 // Tratar erros de autenticação biométrica, se necessário
             }
 
             @Override
-            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+            public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-                // A autenticação biométrica foi bem-sucedida, você pode realizar ações aqui
-                MainActivity();
+                if (useBiometric) {
+                    // A autenticação biométrica foi bem-sucedida e o usuário optou por usá-la
+                    MainActivity();
+                }
             }
 
             @Override
             public void onAuthenticationFailed() {
                 super.onAuthenticationFailed();
-                // A autenticação biométrica falhou, trate conforme necessário
+                if (useBiometric) {
+                    // A autenticação biométrica falhou e o usuário optou por usá-la
+                    // Trate conforme necessário
+                }
             }
         });
 
@@ -112,8 +129,13 @@ public class FormLogin extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            // Autenticação bem-sucedida com email/senha, iniciar autenticação biométrica
-                            biometricPrompt.authenticate(promptInfo);
+                            if (useBiometric) {
+                                // Autenticação bem-sucedida com email/senha e o usuário optou por usar a autenticação biométrica
+                                biometricPrompt.authenticate(promptInfo);
+                            } else {
+                                // Autenticação bem-sucedida com email/senha e o usuário optou por não usar a autenticação biométrica
+                                MainActivity();
+                            }
                         }
                     }, 3000);
                 } else {
@@ -139,8 +161,8 @@ public class FormLogin extends AppCompatActivity {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (currentUser != null) {
-            // O usuário já está autenticado com email/senha, iniciar autenticação biométrica
+        if (currentUser != null && useBiometric) {
+            // O usuário já está autenticado com email/senha e optou por usar a autenticação biométrica
             biometricPrompt.authenticate(promptInfo);
         }
     }
@@ -154,9 +176,25 @@ public class FormLogin extends AppCompatActivity {
     private void StartComponents() {
         text_tela_cadastro = findViewById(R.id.text_tela_cadastro);
         edit_email = findViewById(R.id.edit_email);
-        edit_password = findViewById((R.id.edit_senha));
+        edit_password = findViewById(R.id.edit_senha);
         bt_entrar = findViewById(R.id.bt_entrar);
+        bt_biometric = findViewById(R.id.bt_biometric); // Botão para alternar a autenticação biométrica
         progressBar = findViewById(R.id.progressbar);
+        updateBiometricButtonState(); // Atualize o estado do botão biométrico
+    }
+
+    private void updateBiometricButtonState() {
+        // Atualize o texto ou a cor do botão biométrico com base na escolha do usuário
+        if (useBiometric) {
+            bt_biometric.setText("Desativar Autenticação Biométrica");
+            bt_biometric.setBackgroundColor(Color.GREEN);
+        } else {
+            bt_biometric.setText("Ativar Autenticação Biométrica");
+            bt_biometric.setBackgroundColor(Color.RED);
+        }
     }
 }
+
+
+
 
