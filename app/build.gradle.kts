@@ -47,6 +47,7 @@ dependencies {
     implementation("androidx.biometric:biometric:1.1.0")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.android.material:material:1.10.0")
 
 
 }
