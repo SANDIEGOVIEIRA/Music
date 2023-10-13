@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_option1"
+        android:icon="@drawable/ic_baseline_skip_next_24"
+        android:title="Opção 1" />
+    <item
+        android:id="@+id/menu_option2"
+        android:icon="@drawable/ic_baseline_skip_previous_24"
+        android:title="Opção 2" />
+    <item
+        android:id="@+id/menu_option3"
+        android:icon="@drawable/ic_email"
+        android:title="Opção 3" />
+</menu>
