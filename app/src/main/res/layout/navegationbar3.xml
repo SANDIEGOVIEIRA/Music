@@ -5,16 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/histdamusica">
+    android:background="@drawable/images3">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbarr"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        app:title="Pagina 2"
+        app:title="Pagina 3"
         app:titleTextColor="@android:color/white" />
 
     <!-- Conteúdo da Tela 2 -->
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_below="@id/toolbar">
+        android:layout_below="@id/toolbarr">
 
     </LinearLayout>
     <com.google.android.material.bottomnavigation.BottomNavigationView

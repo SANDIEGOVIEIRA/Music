@@ -4,15 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class Tela2Activity extends AppCompatActivity {
+public class Tela3Activity extends AppCompatActivity {
 
-    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.navegationbar2);
+        setContentView(R.layout.navegationbar3);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -23,16 +21,19 @@ public class Tela2Activity extends AppCompatActivity {
                 finish();
                 return true;
             } else if (item.getItemId() == R.id.menu_option2) {
-                // Já está na Tela2Activity, não é necessário fazer nada
-                return true;
-            } else if (item.getItemId() == R.id.menu_option3) {
-                // Navegue para Tela3Activity
-                Intent intent = new Intent(this, Tela3Activity.class);
+                // Navegue para Tela2Activity
+                Intent intent = new Intent(this, Tela2Activity.class);
                 startActivity(intent);
                 finish();
+                return true;
+            } else if (item.getItemId() == R.id.menu_option3) {
+                // Já está na Tela3Activity, não é necessário fazer nada
                 return true;
             }
             return false;
         });
     }
 }
+
+
+
