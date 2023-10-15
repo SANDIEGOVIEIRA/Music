@@ -27,6 +27,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,7 +102,27 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(adapter);
         }
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.menu_option1) {
+                // Já está na tela principal (MainActivity), não é necessário fazer nada
+                return true;
+            } else if (item.getItemId() == R.id.menu_option2) {
+                // Navegue para Tela2Activity
+                Intent intent = new Intent(MainActivity.this, Tela2Activity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            } else if (item.getItemId() == R.id.menu_option3) {
+                Intent intent = new Intent(MainActivity.this, Tela3Activity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            return false;
+        });
     }
+
 
     boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
