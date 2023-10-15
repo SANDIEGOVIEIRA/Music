@@ -16,8 +16,6 @@ import android.widget.TextView;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -120,37 +118,31 @@ public class FormLogin extends AppCompatActivity {
         String email = edit_email.getText().toString();
         String password = edit_password.getText().toString();
 
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    progressBar.setVisibility(View.VISIBLE);
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                progressBar.setVisibility(View.VISIBLE);
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (useBiometric) {
-                                // Autenticação bem-sucedida com email/senha e o usuário optou por usar a autenticação biométrica
-                                biometricPrompt.authenticate(promptInfo);
-                            } else {
-                                // Autenticação bem-sucedida com email/senha e o usuário optou por não usar a autenticação biométrica
-                                MainActivity();
-                            }
-                        }
-                    }, 3000);
-                } else {
-                    String error;
-
-                    try {
-                        throw task.getException();
-                    } catch (Exception e) {
-                        error = "Erro ao logar usuário";
+                new Handler().postDelayed(() -> {
+                    if (useBiometric) {
+                        // Autenticação bem-sucedida com email/senha e o usuário optou por usar a autenticação biométrica
+                        biometricPrompt.authenticate(promptInfo);
+                    } else {
+                        // Autenticação bem-sucedida com email/senha e o usuário optou por não usar a autenticação biométrica
+                        MainActivity();
                     }
-                    Snackbar snackbar = Snackbar.make(view, error, Snackbar.LENGTH_SHORT);
-                    snackbar.setBackgroundTint(Color.WHITE);
-                    snackbar.setTextColor(Color.BLACK);
-                    snackbar.show();
+                }, 3000);
+            } else {
+                String error;
+
+                try {
+                    throw task.getException();
+                } catch (Exception e) {
+                    error = "Erro ao logar usuário";
                 }
+                Snackbar snackbar = Snackbar.make(view, error, Snackbar.LENGTH_SHORT);
+                snackbar.setBackgroundTint(Color.WHITE);
+                snackbar.setTextColor(Color.BLACK);
+                snackbar.show();
             }
         });
     }
@@ -161,9 +153,14 @@ public class FormLogin extends AppCompatActivity {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (currentUser != null && useBiometric) {
-            // O usuário já está autenticado com email/senha e optou por usar a autenticação biométrica
-            biometricPrompt.authenticate(promptInfo);
+        if (currentUser != null) {
+            // O usuário já está autenticado com email/senha
+            if (useBiometric) {
+                // O usuário optou por usar a autenticação biométrica
+                biometricPrompt.authenticate(promptInfo);
+            } else {
+                MainActivity();
+            }
         }
     }
 
@@ -194,6 +191,7 @@ public class FormLogin extends AppCompatActivity {
         }
     }
 }
+
 
 
 
