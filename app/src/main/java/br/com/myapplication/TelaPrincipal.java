@@ -125,6 +125,12 @@ public class TelaPrincipal extends AppCompatActivity {
             documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        // Lide com exceções relacionadas ao Firestore aqui, se necessário.
+                        Log.e("FirestoreError", "Erro no Firestore: " + error.getMessage());
+                        return;
+                    }
+
                     if (documentSnapshot != null) {
                         nomeUsuario.setText(documentSnapshot.getString("nome"));
                         emailUsuario.setText(email);
@@ -132,16 +138,9 @@ public class TelaPrincipal extends AppCompatActivity {
                         // Suponhamos que você tenha uma URL de imagem no Firestore
                         String fotoPerfilUrl = documentSnapshot.getString("fotoPerfilUrl");
 
-                        // Verifica se o usuário tem uma foto de perfil
                         if (fotoPerfilUrl != null && !fotoPerfilUrl.isEmpty()) {
                             // Use o Glide para carregar a imagem do Firebase Storage
-                            StorageReference profileImageRef = storageReference.child(fotoPerfilUrl);
-
-                            // Use o método .into() do Glide para carregar a imagem no CircleImageView
-                            Glide.with(TelaPrincipal.this)
-                                    .load(profileImageRef)
-                                    .placeholder(R.drawable.ic_user) // Exibe um ícone padrão enquanto a imagem é carregada
-                                    .into(imgPerfil);
+                            carregarImagemPerfil(fotoPerfilUrl);
                         } else {
                             // Se não houver uma foto de perfil, você pode exibir uma imagem padrão ou ocultar a ImageView
                             imgPerfil.setImageResource(R.drawable.ic_user);
@@ -151,6 +150,7 @@ public class TelaPrincipal extends AppCompatActivity {
             });
         }
     }
+
 
     private void IniciarComponentes() {
         nomeUsuario = findViewById(R.id.textNomeUsuario);
