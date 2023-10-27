@@ -3,6 +3,7 @@ package br.com.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,15 @@ public class FormCadastro extends AppCompatActivity {
     private Button bt_cadastrar;
     String[] mensagens = {"Preencha todos os campos!", "Cadastro realizado com suceesso!"};
     String usuarioID;
+
+    public void voltarTelaAnterio(View view) {
+        // Crie um Intent para iniciar a tela principal
+        Intent intent = new Intent(this, FormLogin.class);
+        startActivity(intent);
+
+        // Finalize a atividade atual (tela de configurações) se você não deseja que ela permaneça na pilha de atividades
+        finish();
+    }
 
 
     @Override

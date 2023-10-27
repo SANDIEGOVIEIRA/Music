@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:background="@drawable/backgraund"
     tools:context=".FormCadastro">
+
+    <ImageView
+        android:id="@+id/imgVolta"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:onClick="voltarTelaAnterio"
+        android:src="@drawable/imgvoltar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     
     <TextView
         android:id="@+id/title_cadastrese"
