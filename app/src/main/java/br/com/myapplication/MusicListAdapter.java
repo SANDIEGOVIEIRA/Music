@@ -16,27 +16,29 @@ import java.util.ArrayList;
 public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.ViewHolder> {
 
     ArrayList<AudioModel> songList;
+    ArrayList<AudioModel> originalList; // Para manter a lista original não filtrada
     Context context;
 
     public MusicListAdapter(ArrayList<AudioModel> songList, Context context) {
         this.songList = songList;
+        this.originalList = new ArrayList<>(songList);
         this.context = context;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.recycler_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder( ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         AudioModel songData = songList.get(position);
         holder.tittle.setText(songData.getTitle());
 
-        if(MyMediaPlayer.currentIndex==position){
+        if (MyMediaPlayer.currentIndex == position) {
             holder.tittle.setTextColor(Color.parseColor("#FFFFFF"));
-        }else {
+        } else {
             holder.tittle.setTextColor(Color.parseColor("#000000"));
         }
 
@@ -59,12 +61,11 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.View
     }
 
     public void filterList(ArrayList<AudioModel> filteredList) {
-        this.songList = filteredList;
+        songList = filteredList;
         notifyDataSetChanged();
     }
 
-
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tittle;
         ImageView icon;
 
@@ -76,4 +77,5 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.View
         }
     }
 }
+
 

@@ -6,6 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
@@ -29,6 +32,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import br.com.myapplication.databinding.ActivityMainBinding;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,10 +44,31 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<AudioModel> songList = new ArrayList<>();
     MusicListAdapter adapter;
 
+    ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        binding.bottomNavigation.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.menu_option1) {
+                // Abra a MainActivity
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.menu_option2) {
+                // Abra o SegundoFragment
+                replaceFragment(new SegundoFragment());
+            } else if (itemId == R.id.menu_option3) {
+                // Abra o TerceiroFragment
+                replaceFragment(new TerceiroFragment());
+            }
+
+            return true;
+        });
 
         // Fetch and log the FCM registration token
         FirebaseMessaging.getInstance().getToken()
@@ -102,27 +128,7 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(adapter);
         }
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.menu_option1) {
-                // Já está na tela principal (MainActivity), não é necessário fazer nada
-                return true;
-            } else if (item.getItemId() == R.id.menu_option2) {
-                // Navegue para Tela2Activity
-                Intent intent = new Intent(MainActivity.this, Tela2Activity.class);
-                startActivity(intent);
-                finish();
-                return true;
-            } else if (item.getItemId() == R.id.menu_option3) {
-                Intent intent = new Intent(MainActivity.this, Tela3Activity.class);
-                startActivity(intent);
-                finish();
-                return true;
-            }
-            return false;
-        });
     }
-
 
     boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -140,16 +146,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // Handle search when the user submits the query (optional)
-                return false;
+                return false; // Aqui você pode lidar com a submissão da pesquisa (opcional)
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                // Quando o texto da pesquisa muda, filtre a lista de músicas
                 ArrayList<AudioModel> filteredList = new ArrayList<>();
                 for (AudioModel song : songList) {
                     if (song.getTitle().toLowerCase().contains(newText.toLowerCase())) {
@@ -179,13 +186,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sortSongList() {
-        Collections.sort(songList, new Comparator<AudioModel>() {
-            @Override
-            public int compare(AudioModel song1, AudioModel song2) {
-                return song1.getTitle().compareToIgnoreCase(song2.getTitle());
-            }
-        });
+        AudioModelComparator comparator = new AudioModelComparator();
+        Collections.sort(songList, comparator);
         adapter.notifyDataSetChanged();
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment);
+        fragmentTransaction.commit();
     }
 }
 
