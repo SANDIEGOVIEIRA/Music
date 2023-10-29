@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backgraund"
+    android:background="@drawable/fundo_degrade"
     tools:context=".TelaPrincipal"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="78dp">
