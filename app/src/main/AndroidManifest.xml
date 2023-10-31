@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 
     <application
@@ -18,12 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
-        <activity
-            android:name=".Tela3Activity"
-            android:exported="false" />
-        <activity
-            android:name=".Tela2Activity"
-            android:exported="false" />
+
         <activity
             android:name=".TelaPrincipal"
             android:exported="false" />

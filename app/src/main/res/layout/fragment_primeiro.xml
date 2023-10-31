@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/histdamusica">
+    android:layout_height="match_parent">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -18,12 +17,10 @@
         app:titleTextColor="@android:color/white" />
 
     <!-- Conteúdo da Tela 2 -->
-    <LinearLayout
+    <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_below="@id/toolbar">
-
-    </LinearLayout>
-
+        android:layout_below="@id/toolbar" />
 </RelativeLayout>
+

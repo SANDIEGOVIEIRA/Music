@@ -1,12 +1,13 @@
 package br.com.myapplication;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class PrimeiroFragment extends Fragment {
+    private WebView webView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,8 +59,29 @@ public class PrimeiroFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_primeiro, container, false);
+                             Bundle savedInstanceState) {View rootView = inflater.inflate(R.layout.fragment_primeiro, container, false);
+
+        // Inicialize a WebView
+        webView = rootView.findViewById(R.id.webView);
+
+        // Habilita JavaScript no WebView
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
+
+        // Habilita a mistura de conteúdo de outras origens (incluindo arquivos CSS)
+        webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+
+        // Configura a WebView para permitir o uso de protocolos não seguros (http) junto com protocolos seguros (https)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+        }
+
+        // Define um WebViewClient para abrir links internamente no WebView
+        webView.setWebViewClient(new WebViewClient());
+
+        // Carrega o arquivo HTML a partir da pasta de recursos
+        webView.loadUrl("file:///android_asset/TEST/index.html");
+
+        return rootView;
     }
 }

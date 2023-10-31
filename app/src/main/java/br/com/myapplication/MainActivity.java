@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             } else if (itemId == R.id.menu_option2) {
                 // Abra o SegundoFragment
-                replaceFragment(new SegundoFragment());
+                replaceFragment(new PrimeiroFragment());
             } else if (itemId == R.id.menu_option3) {
                 // Abra o TerceiroFragment
                 replaceFragment(new TerceiroFragment());
